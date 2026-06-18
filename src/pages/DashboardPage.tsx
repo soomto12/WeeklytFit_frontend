@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_BASE_URL } from '../libs/config'
 import type { WorkoutRoutine, DailyLogStatus, DayPlan } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
 
@@ -284,7 +285,7 @@ function DashboardPage() {
   useEffect(() => {
     const fetchRoutines = async () => {
       try {
-        const res = await fetch('http://localhost:3001/aiResult/results', {
+        const res = await fetch(`${API_BASE_URL}/aiResult/results`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         if (!res.ok) return

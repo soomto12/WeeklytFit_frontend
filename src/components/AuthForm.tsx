@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm, type Resolver, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, loginSchema, SignUpData } from '../libs/types'
+import { API_BASE_URL } from '../libs/config'
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../context/UserContext'
 
@@ -26,7 +27,7 @@ function AuthForm() {
     setIsLoading(true)
     if (isLoginForm) {
       try {
-        const res = await fetch("http://localhost:3001/users/login", {  // http://localhost:3001/users/login
+        const res = await fetch(`${API_BASE_URL}/users/login`, {  // https://weeklytfit-backend22.onrender.com/users/login
           method: 'POST',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -49,7 +50,7 @@ function AuthForm() {
       }
     } else {
       try {
-        const res = await fetch("http://localhost:3001/users/register", {
+        const res = await fetch(`${API_BASE_URL}/users/register`, {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)

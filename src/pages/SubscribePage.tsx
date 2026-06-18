@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { API_BASE_URL } from '../libs/config'
 
 const plans = [
   {
@@ -45,7 +46,7 @@ function SubscribePage() {
   
     const token = localStorage.getItem('token')
     try {
-      const res = await fetch('http://localhost:3001/subscription/post', {
+      const res = await fetch(`${API_BASE_URL}/subscription/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

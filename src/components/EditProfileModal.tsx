@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { workoutFormSchema, type WorkoutFormData } from '../libs/types'
+import { API_BASE_URL } from '../libs/config'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const inputClass = 'border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 w-full'
@@ -36,7 +37,7 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
     setError(null)
     const token = localStorage.getItem('token')
     try {
-      const res = await fetch('http://localhost:3001/profile/update', {
+      const res = await fetch(`${API_BASE_URL}/profile/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

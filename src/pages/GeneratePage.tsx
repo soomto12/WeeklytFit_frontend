@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DayPlan, DailyLogStatus, Day } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
+import { API_BASE_URL } from '../libs/config'
 
 const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
 
@@ -140,7 +141,7 @@ function GeneratePage() {
   const submitLog = async () => {
     setSubmitting(true)
     try {
-      await fetch('http://localhost:3001/dailyLogs', {
+      await fetch(`${API_BASE_URL}/dailyLogs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +159,7 @@ function GeneratePage() {
   const generateWeeklyContent = async () => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:3001/aiResult/generate', {
+      const res = await fetch(`${API_BASE_URL}/aiResult/generate`, {
         method: aiResult ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',

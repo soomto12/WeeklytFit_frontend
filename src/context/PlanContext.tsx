@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode, type Dispatch, type SetStateAction } from 'react'
 import type { AI_Result, DailyLogStatus, Day } from '../libs/types'
+import { API_BASE_URL } from '../libs/config'
 
 const DEFAULT_LOGS: Record<Day, DailyLogStatus> = {
   sunday: 'pending', monday: 'pending', tuesday: 'pending',
@@ -28,9 +29,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       setFetching(true)
       try {
         const [planRes, logsRes] = await Promise.all([
-          fetch('http://localhost:3001/aiResult/result', { headers: { Authorization: `Bearer ${token}` } }),
-          fetch('http://localhost:3001/dailyLogs',       { headers: { Authorization: `Bearer ${token}` } }),
-        ])
+          fetch(`${API_BASE_URL}/aiResult/result`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_BASE_URL}/dailyLogs`,       { headers: { Authorization: `Bearer ${token}` } }),
+        ]) 
 
         if (planRes.ok) {
           const planData = await planRes.json()

@@ -1,6 +1,7 @@
-﻿import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { workoutFormSchema, type WorkoutFormData } from '../libs/types'
+import { API_BASE_URL } from '../libs/config'
 import { useState, useEffect } from 'react'
 import ProfileCard from '../components/ProfileCard'
 import EditProfileModal from '../components/EditProfileModal'
@@ -23,7 +24,7 @@ function ProfilePage() {
     const fetchProfile = async () => {
       const token = localStorage.getItem('token')
       try {
-        const res = await fetch('http://localhost:3001/profile/me', {
+        const res = await fetch(`${API_BASE_URL}/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         const resData = await res.json()
@@ -59,7 +60,7 @@ function ProfilePage() {
     setError(null)
     const token = localStorage.getItem('token')
     try {
-      const res = await fetch('http://localhost:3001/profile/post', {
+      const res = await fetch(`${API_BASE_URL}/profile/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ function ProfilePage() {
   return (
     <div className="h-screen flex overflow-hidden">
 
-      {/* ── Left form panel ── */}
+      {/* -- Left form panel -- */}
       <div className="flex-1 overflow-y-auto bg-gray-50 py-10 px-6">
         <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-sm p-8">
           {isEdit && profile && (
@@ -105,7 +106,7 @@ function ProfilePage() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center gap-3 py-24">
               <Spinner size={36} />
-              <p className="text-sm text-gray-500">Loading your profile…</p>
+              <p className="text-sm text-gray-500">Loading your profile�</p>
             </div>
           ) : profile ? (
             <ProfileCard profile={profile} onEdit={editProfile} />
@@ -122,7 +123,7 @@ function ProfilePage() {
               <input
                 {...register('goal')}
                 type="text"
-                placeholder="e.g. Lose weight, build muscle…"
+                placeholder="e.g. Lose weight, build muscle�"
                 className={inputClass}
               />
               {errors.goal && <span className={errorClass}>{errors.goal.message}</span>}
@@ -240,7 +241,7 @@ function ProfilePage() {
               <textarea
                 {...register('healthIssues')}
                 rows={3}
-                placeholder="e.g. bad knees, lower back pain…"
+                placeholder="e.g. bad knees, lower back pain�"
                 className={`${inputClass} resize-none`}
               />
             </div>
@@ -261,7 +262,7 @@ function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Right decorative panel ── */}
+      {/* -- Right decorative panel -- */}
       <div className="hidden lg:flex lg:w-[46%] bg-gradient-to-br from-gray-900 via-green-900 to-emerald-700 flex-col justify-between p-12 relative overflow-hidden shrink-0">
 
         {/* Ambient glow blobs */}
@@ -329,7 +330,7 @@ function ProfilePage() {
           </h2>
 
           <p className="text-green-100/75 text-sm leading-relaxed mb-10 max-w-[300px]">
-            Personalised AI workout plans built around your body, your goals, and your lifestyle — no guesswork.
+            Personalised AI workout plans built around your body, your goals, and your lifestyle � no guesswork.
           </p>
 
           <div className="space-y-4">

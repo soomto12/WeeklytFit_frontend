@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode, } from 'react'
+import { API_BASE_URL } from '../libs/config'
 import { useNavigate } from 'react-router-dom'
 
 type User = {
@@ -32,7 +33,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     const getUser = async () => {
       try {
-        const res = await fetch('http://localhost:3001/users/me', {
+        const res = await fetch(`${API_BASE_URL}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         const resData = await res.json()

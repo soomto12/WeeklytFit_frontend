@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import type { WorkoutFormData } from '../libs/types'
 import { useUser } from '../context/UserContext'
+import { API_BASE_URL } from '../libs/config'
 
 const locationLabel: Record<WorkoutFormData['location'], string> = {
   gym: 'Gym',
@@ -29,7 +30,7 @@ function ProfileCard({ profile, onEdit }: { profile: WorkoutFormData; onEdit: ()
     formData.append('image', file)
 
     try {
-      const res = await fetch('http://localhost:3001/users/addImage', {
+      const res = await fetch(`${API_BASE_URL}/users/addImage`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
