@@ -30,14 +30,13 @@ function StatChip({ label, value }: { label: string; value: string }) {
   )
 }
 
-function DayCard({ day, label, status, onStatus, onSubmit, submitting, logError }: {
+function DayCard({ day, label, status, onStatus, onSubmit, submitting }: {
   day: DayPlan
   label: string
   status: DailyLogStatus
   onStatus: (s: DailyLogStatus) => void
   onSubmit: () => void
   submitting: boolean
-  logError: string | null
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -52,7 +51,6 @@ function DayCard({ day, label, status, onStatus, onSubmit, submitting, logError 
             <button
               key={opt.value}
               onClick={() => onStatus(opt.value)}
-              disabled={!!logError}
               className={`px-4 py-1.5 rounded-lg text-xs font-semibold border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                 status === opt.value ? opt.active : opt.color
               }`}
@@ -61,17 +59,13 @@ function DayCard({ day, label, status, onStatus, onSubmit, submitting, logError 
             </button>
           ))}
         </div>
-        {logError ? (
-          <p className="text-xs text-red-500 font-medium py-2 text-center">{logError}</p>
-        ) : (
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="w-full bg-green-600 text-white text-xs font-semibold py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {submitting ? 'Saving…' : 'Save log'}
-          </button>
-        )}
+        <button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="w-full bg-green-600 text-white text-xs font-semibold py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {submitting ? 'Saving…' : 'Save log'}
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -125,18 +119,6 @@ function GeneratePage() {
   const [submitting, setSubmitting] = useState(false)
 
   const token = localStorage.getItem('token')
-
-  const todayIndex = DAYS.indexOf(DAYS[new Date().getDay()])
-  const selectedIndex = DAYS.indexOf(selectedDay)
-
-  const logError: string | null = (() => {
-    if (selectedIndex > todayIndex)
-      return "You can't log a day that hasn't happened yet."
-    const missingDay = DAYS.slice(0, selectedIndex).find(d => dailyLogs[d] === 'pending')
-    if (missingDay)
-      return `Log ${missingDay.charAt(0).toUpperCase() + missingDay.slice(1)} first before logging ${selectedDay}.`
-    return null
-  })()
 
   const submitLog = async () => {
     setSubmitting(true)
@@ -238,7 +220,6 @@ function GeneratePage() {
               onStatus={(s) => setDailyLogs(prev => ({ ...prev, [selectedDay]: s }))}
               onSubmit={submitLog}
               submitting={submitting}
-              logError={logError}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center py-16">
