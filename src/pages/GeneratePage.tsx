@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'
 import type { DayPlan, DailyLogStatus, Day } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
 import { API_BASE_URL } from '../libs/config'
@@ -117,8 +118,24 @@ function GeneratePage() {
   const [selectedDay, setSelectedDay] = useState<Day>(DAYS[new Date().getDay()])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null)
 
   const token = localStorage.getItem('token')
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/profile/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setHasProfile(res.ok)
+      } catch (error) {
+        console.error(error)
+        setHasProfile(false)
+      }
+    }
+    checkProfile()
+  }, [token])
 
   const submitLog = async () => {
     setSubmitting(true)
@@ -174,17 +191,31 @@ function GeneratePage() {
           <p className="text-sm text-gray-500">Your personalised weekly plan will appear below.</p>
         </div>
 
-        <button
-          onClick={generateWeeklyContent}
-          disabled={loading}
-          className="bg-green-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading
-            ? 'Generating…'
-            : aiResult
-            ? 'Regenerate routine'
-            : 'Generate Plan'}
-        </button>
+        {hasProfile === false ? (
+          <div className="flex flex-col items-center gap-3 text-center">
+            <p className="text-sm text-amber-600 font-medium">
+              You haven't created a profile yet. Create one first so we can generate a workout routine tailored to you.
+            </p>
+            <Link
+              to="/profile"
+              className="bg-green-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-700 transition-colors"
+            >
+              Create profile
+            </Link>
+          </div>
+        ) : (
+          <button
+            onClick={generateWeeklyContent}
+            disabled={loading || hasProfile === null}
+            className="bg-green-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading
+              ? 'Generating…'
+              : aiResult
+              ? 'Regenerate routine'
+              : 'Generate Plan'}
+          </button>
+        )}
       </div>
 
       {/* ── Right panel ── */}
