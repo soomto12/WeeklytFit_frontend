@@ -146,22 +146,25 @@ function StatRow({ icon, label, value }: { icon: React.ReactNode; label: string;
   )
 }
 
-function DailyLogPanel({ plan, status, onStatus, onSubmit, submitting }: {
+function DailyLogPanel({ plan, status, onLog, submitting }: {
   plan: DayPlan
   status: DailyLogStatus
-  onStatus: (s: DailyLogStatus) => void
-  onSubmit: () => void
+  onLog: (s: DailyLogStatus) => void
   submitting: boolean
 }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="surface-card p-5">
-        <p className="text-white font-semibold mb-3">Daily log</p>
-        <div className="flex gap-2 flex-wrap mb-3">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-white font-semibold">Daily log</p>
+          {submitting && <span className="text-xs text-neutral-500">Saving…</span>}
+        </div>
+        <div className="flex gap-2 flex-wrap">
           {LOG_OPTIONS.map(opt => (
             <button
               key={opt.value}
-              onClick={() => onStatus(opt.value)}
+              onClick={() => onLog(opt.value)}
+              disabled={submitting}
               className={`px-4 py-1.5 rounded-lg text-xs font-semibold border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                 status === opt.value ? opt.active : opt.color
               }`}
@@ -170,9 +173,6 @@ function DailyLogPanel({ plan, status, onStatus, onSubmit, submitting }: {
             </button>
           ))}
         </div>
-        <button onClick={onSubmit} disabled={submitting} className="btn-accent w-full text-sm py-2.5">
-          {submitting ? 'Saving…' : 'Save log'}
-        </button>
 
         <div className="mt-4 pt-1">
           <StatRow icon={<IconDumbbell size={14} />} label="Focus" value={plan.focus || '—'} />
@@ -229,7 +229,8 @@ function GeneratePage() {
     checkProfile()
   }, [token])
 
-  const submitLog = async () => {
+  const logDay = async (status: DailyLogStatus) => {
+    setDailyLogs(prev => ({ ...prev, [selectedDay]: status }))
     setSubmitting(true)
     try {
       await fetch(`${API_BASE_URL}/dailyLogs`, {
@@ -238,7 +239,7 @@ function GeneratePage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ aiResultId: aiResult?.id, day: selectedDay, status: dailyLogs[selectedDay] }),
+        body: JSON.stringify({ aiResultId: aiResult?.id, day: selectedDay, status }),
       })
     } catch (error) {
       console.error(error)
@@ -307,8 +308,7 @@ function GeneratePage() {
                 <DailyLogPanel
                   plan={plan}
                   status={dailyLogs[selectedDay]}
-                  onStatus={(s) => setDailyLogs(prev => ({ ...prev, [selectedDay]: s }))}
-                  onSubmit={submitLog}
+                  onLog={logDay}
                   submitting={submitting}
                 />
               ) : (
