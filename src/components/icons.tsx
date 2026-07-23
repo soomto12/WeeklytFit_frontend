@@ -185,6 +185,15 @@ export function IconZap({ size = 20, className }: IconProps) {
   )
 }
 
+export function IconYoutube({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
+      <rect x="2" y="5" width="20" height="14" rx="4" />
+      <polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 export function IconShield({ size = 20, className }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>

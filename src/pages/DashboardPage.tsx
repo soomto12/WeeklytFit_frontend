@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { API_BASE_URL } from '../libs/config'
 import type { WorkoutRoutine, DailyLogStatus, DayPlan } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
-import { IconDumbbell, IconFork, IconArrowRight, IconX } from '../components/icons'
+import { IconDumbbell, IconFork, IconArrowRight, IconX, IconYoutube } from '../components/icons'
 
 const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
 type Day = typeof DAYS[number]
@@ -123,6 +123,17 @@ function ExercisesCard({ plan }: { plan: DayPlan | undefined }) {
                 <IconDumbbell size={16} />
               </div>
               <p className="text-sm font-medium text-white flex-1 truncate">{ex.name}</p>
+              {ex.youtubeUrl && (
+                <a
+                  href={ex.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-neutral-500 hover:text-emerald-400 transition-colors shrink-0"
+                  title={`Watch ${ex.name} tutorial on YouTube`}
+                >
+                  <IconYoutube size={15} />
+                </a>
+              )}
               <span className="text-xs text-neutral-400 shrink-0">{ex.sets} × {ex.reps}</span>
             </div>
           ))}
@@ -264,7 +275,20 @@ function RoutineModal({ routine, onClose }: { routine: WorkoutRoutine; onClose: 
               <p className="text-xs font-medium text-neutral-500 mb-2">Exercises</p>
               {plan.exercises.map((ex, i) => (
                 <div key={i} className="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
-                  <span className="text-xs text-neutral-200 font-medium">{ex.name}</span>
+                  <span className="text-xs text-neutral-200 font-medium flex items-center gap-1.5">
+                    {ex.name}
+                    {ex.youtubeUrl && (
+                      <a
+                        href={ex.youtubeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-500 hover:text-emerald-400 transition-colors"
+                        title={`Watch ${ex.name} tutorial on YouTube`}
+                      >
+                        <IconYoutube size={13} />
+                      </a>
+                    )}
+                  </span>
                   <span className="text-xs text-neutral-500">{ex.sets} × {ex.reps} · {ex.rest}s</span>
                 </div>
               ))}

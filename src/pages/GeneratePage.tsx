@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import type { DayPlan, DailyLogStatus, Day } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
 import { API_BASE_URL } from '../libs/config'
-import { IconArrowRight, IconInfo, IconDumbbell, IconZap, IconClock, IconFork, IconCalendar } from '../components/icons'
+import { IconArrowRight, IconInfo, IconDumbbell, IconZap, IconClock, IconFork, IconCalendar, IconYoutube } from '../components/icons'
 
 const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
 
@@ -98,7 +98,20 @@ function ExercisesCard({ plan }: { plan: DayPlan }) {
       <div className="flex flex-col">
         {plan.exercises.map((ex, i) => (
           <div key={i} className="flex items-center justify-between gap-4 py-3.5 border-b border-white/5 last:border-0">
-            <p className="text-sm font-bold text-white uppercase tracking-wide">{ex.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-bold text-white uppercase tracking-wide">{ex.name}</p>
+              {ex.youtubeUrl && (
+                <a
+                  href={ex.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-neutral-500 hover:text-emerald-400 transition-colors shrink-0"
+                  title={`Watch ${ex.name} tutorial on YouTube`}
+                >
+                  <IconYoutube size={16} />
+                </a>
+              )}
+            </div>
             <div className="text-right shrink-0">
               <p className="text-sm text-neutral-300">{ex.sets} sets × {ex.reps} reps</p>
               <p className="text-xs text-emerald-400">{ex.rest}s rest</p>
