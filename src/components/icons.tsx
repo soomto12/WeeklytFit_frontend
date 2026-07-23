@@ -167,6 +167,43 @@ export function IconMapPin({ size = 20, className }: IconProps) {
   )
 }
 
+export function IconInfo({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
+      <circle cx="12" cy="12" r="9" />
+      <line x1="12" y1="11" x2="12" y2="16" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  )
+}
+
+export function IconZap({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
+      <polygon points="13 2 3 14 11 14 10 22 21 10 13 10 13 2" />
+    </svg>
+  )
+}
+
+export function IconShield({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
+      <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z" />
+    </svg>
+  )
+}
+
+export function IconHeadset({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
+      <path d="M4 14v-2a8 8 0 1 1 16 0v2" />
+      <rect x="2" y="14" width="5" height="7" rx="1.5" />
+      <rect x="17" y="14" width="5" height="7" rx="1.5" />
+      <path d="M20 21a4 4 0 0 1-4 2h-1" />
+    </svg>
+  )
+}
+
 export function IconBed({ size = 20, className }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>

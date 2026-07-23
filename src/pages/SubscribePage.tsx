@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { Link } from 'react-router-dom'
 import { API_BASE_URL } from '../libs/config'
-import { IconCheck } from '../components/icons'
+import { IconCheck, IconShield, IconCalendar, IconSparkles, IconHeadset } from '../components/icons'
 
 const plans = [
   {
@@ -17,7 +18,7 @@ const plans = [
     price: '$15',
     period: '/ month',
     desc: 'Our most popular plan for consistent progress.',
-    features: ['Unlimited AI plans', 'Advanced tracking', 'Priority support', 'Progress analytics'],
+    features: ['Unlimited AI plans', 'Advanced tracking', 'Priority support', 'Performance insights'],
     highlight: true,
     badge: 'Most Popular',
   },
@@ -30,6 +31,13 @@ const plans = [
     highlight: false,
     badge: 'Best Value',
   },
+]
+
+const TRUST_ITEMS = [
+  { icon: IconShield, title: 'Secure Checkout', desc: 'Payments powered by Stripe' },
+  { icon: IconCalendar, title: 'Cancel Anytime', desc: 'No hidden commitments' },
+  { icon: IconSparkles, title: 'AI Precision', desc: 'Data-driven workouts' },
+  { icon: IconHeadset, title: 'Real Support', desc: 'Email & priority support' },
 ]
 
 function SubscribePage() {
@@ -72,12 +80,14 @@ function SubscribePage() {
       <div className="max-w-5xl mx-auto">
 
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-3">Choose Your Plan</h1>
-          <p className="text-neutral-400 text-lg">Flexible pricing to fit your fitness journey.</p>
-          <div className="pill pill-accent mt-4">
+          <div className="pill pill-accent mb-6">
             <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
             Every plan includes a 3-week free trial — cancel anytime
           </div>
+          <h1 className="text-4xl font-bold text-white mb-3">Choose Your Plan</h1>
+          <p className="text-neutral-400 text-lg max-w-xl mx-auto">
+            Flexible pricing to fit your fitness journey. Precision performance powered by AI, tailored for elite athletes.
+          </p>
         </div>
 
         {serverError && <p className="text-red-400 text-sm text-center mb-6">{serverError}</p>}
@@ -90,8 +100,13 @@ function SubscribePage() {
                 highlight ? 'bg-emerald-400/5 border-emerald-400/40' : 'surface-card'
               }`}
             >
-              {badge && (
-                <span className="pill pill-accent absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
+              {highlight && badge && (
+                <span className="pill pill-accent absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap uppercase tracking-wide">
+                  {badge}
+                </span>
+              )}
+              {!highlight && badge && (
+                <span className="pill pill-muted absolute top-6 right-6 uppercase tracking-wide">
                   {badge}
                 </span>
               )}
@@ -117,11 +132,51 @@ function SubscribePage() {
                   highlight ? 'btn-accent' : 'btn-outline'
                 }`}
               >
-                Get {name} Plan
+                Select Plan
               </button>
             </div>
           ))}
         </div>
+
+        {/* Trust bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-12 border-t border-white/10">
+          {TRUST_ITEMS.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="flex flex-col items-center text-center gap-2">
+              <div className="w-10 h-10 rounded-lg bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center text-emerald-400">
+                <Icon size={18} />
+              </div>
+              <p className="text-sm font-semibold text-white">{title}</p>
+              <p className="text-xs text-neutral-500">{desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-20 pt-10 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div>
+            <p className="text-white font-bold mb-2">Weekly Fit AI</p>
+            <p className="text-neutral-500 text-sm leading-relaxed max-w-xs">
+              Elevating human performance through precise, AI-driven training routines.
+            </p>
+          </div>
+          <div>
+            <p className="text-emerald-400 font-semibold text-sm mb-3">Resources</p>
+            <ul className="flex flex-col gap-2 text-sm text-neutral-500">
+              <li><Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+              <li>Contact Support</li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-emerald-400 font-semibold text-sm mb-3">Legal</p>
+            <ul className="flex flex-col gap-2 text-sm text-neutral-500">
+              <li>Terms of Service</li>
+              <li>Privacy Policy</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-10 text-neutral-600 text-xs">
+          © {new Date().getFullYear()} Weekly Fit AI. Precision performance.
+        </p>
 
       </div>
     </div>
