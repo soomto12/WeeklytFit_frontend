@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-neutral-950 text-neutral-100;
+  }
+}
+
+@layer components {
+  /* Dark card used across dashboard/landing/forms */
+  .surface-card {
+    @apply bg-white/[0.03] border border-white/10 rounded-2xl;
+  }
+  .surface-card-hover {
+    @apply hover:border-emerald-400/40 transition-colors;
+  }
+
+  .btn-accent {
+    @apply bg-emerald-400 text-neutral-950 font-semibold rounded-xl hover:bg-emerald-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .btn-outline {
+    @apply border border-white/15 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full;
+  }
+  .pill-accent {
+    @apply bg-emerald-400/10 text-emerald-400 border border-emerald-400/20;
+  }
+  .pill-muted {
+    @apply bg-white/5 text-neutral-400 border border-white/10;
+  }
+
+  .field-input {
+    @apply w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-colors;
+  }
+  .field-label {
+    @apply text-sm font-medium text-neutral-300;
+  }
+  .field-error {
+    @apply text-red-400 text-xs mt-0.5;
+  }
+}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import AppShell from './components/AppShell'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
 import { UserProvider } from './context/UserContext'
@@ -25,14 +26,15 @@ function App() {
           <Route element={<GuestRoute />}>
             <Route path="/login" element={<LoginPage />} />
           </Route>
+        </Route>
 
-          <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppShell />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/generate" element={<GeneratePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/subscribe" element={<SubscribePage />} />
             <Route path="/profile" element={<ProfilePage />} />
-         
           </Route>
         </Route>
       </Routes>

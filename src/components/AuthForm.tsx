@@ -76,60 +76,60 @@ function AuthForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       {!isLoginForm ? (
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Name</label>
+          <label className="field-label">Name</label>
           <input
             {...register('name')}
             type="text"
             placeholder="Enter your name"
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="field-input"
           />
-          {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
+          {errors.name && <span className="field-error">{errors.name.message}</span>}
         </div>
       ) : null}
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-700">Email</label>
+        <label className="field-label">Email</label>
         <input
           {...register('email')}
           type="email"
           placeholder="Enter your email"
-          className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="field-input"
         />
-        {errors.email && <span className="text-red-500 text-xs">{errors.email.message}</span>}
+        {errors.email && <span className="field-error">{errors.email.message}</span>}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-700">Password</label>
+        <label className="field-label">Password</label>
         <input
           {...register('password')}
           type="password"
           placeholder="Enter your password"
-          className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="field-input"
         />
-        {errors.password && <span className="text-red-500 text-xs">{errors.password.message}</span>}
+        {errors.password && <span className="field-error">{errors.password.message}</span>}
       </div>
 
       {serverError && (
-        <p className="text-red-500 text-sm text-center">{serverError}</p>
+        <p className="text-red-400 text-sm text-center">{serverError}</p>
       )}
 
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="btn-accent py-3 mt-2 flex items-center justify-center gap-2"
       >
         {isLoading ? (
           <>
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-neutral-950 border-t-transparent rounded-full animate-spin" />
             Loading...
           </>
         ) : 'Get Started'}
       </button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-neutral-500">
         {isLoginForm ? "Don't have an account?" : 'Already have an account?'}{' '}
         <span
-          className="text-green-600 font-medium cursor-pointer hover:underline"
+          className="text-emerald-400 font-medium cursor-pointer hover:underline"
           onClick={login}
         >
           {isLoginForm ? 'Sign up' : 'Log in'}

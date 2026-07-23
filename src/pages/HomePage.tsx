@@ -1,61 +1,59 @@
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../context/UserContext'
+import { IconDumbbell, IconGrid, IconStar, IconArrowRight } from '../components/icons'
 
 const cards = [
   {
-    emoji: '🤖',
+    icon: IconDumbbell,
     title: 'Generate with AI',
     desc: 'Let our AI build your personalized weekly workout routine based on your profile.',
     route: '/generate',
     btn: 'Generate My Plan',
-    color: 'bg-green-600',
   },
   {
-    emoji: '📊',
+    icon: IconGrid,
     title: 'Dashboard',
     desc: 'View your active plan, track your progress, and stay on top of your weekly goals.',
     route: '/dashboard',
     btn: 'Go to Dashboard',
-    color: 'bg-blue-600',
   },
   {
-    emoji: '⭐',
+    icon: IconStar,
     title: 'Subscribe',
     desc: 'Unlock unlimited AI-generated plans, advanced tracking, and premium features.',
     route: '/subscribe',
     btn: 'View Plans',
-    color: 'bg-purple-600',
   },
 ]
 
 function HomePage() {
   const navigate = useNavigate()
+  const { user } = useUser()
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-16">
+    <div className="px-6 py-16">
       <div className="max-w-4xl mx-auto">
 
         <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">Welcome back 💪</h1>
-          <p className="text-gray-500 text-lg">What would you like to do today?</p>
-          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-sm font-semibold px-4 py-2 rounded-full mt-4">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            3 weeks free trial — no credit card required
-          </div>
+          <h1 className="text-4xl font-bold text-white mb-3">Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''}</h1>
+          <p className="text-neutral-400 text-lg">What would you like to do today?</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {cards.map(({ emoji, title, desc, route, btn, color }) => (
-            <div key={title} className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-              <div className="text-4xl">{emoji}</div>
+          {cards.map(({ icon: Icon, title, desc, route, btn }) => (
+            <div key={title} className="surface-card surface-card-hover p-6 flex flex-col gap-4">
+              <div className="w-11 h-11 rounded-xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center text-emerald-400">
+                <Icon size={20} />
+              </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-1">{title}</h2>
-                <p className="text-gray-500 text-sm">{desc}</p>
+                <h2 className="text-xl font-semibold text-white mb-1">{title}</h2>
+                <p className="text-neutral-400 text-sm">{desc}</p>
               </div>
               <button
                 onClick={() => navigate(route)}
-                className={`${color} text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity mt-auto`}
+                className="btn-accent py-2.5 px-4 text-sm mt-auto inline-flex items-center justify-center gap-2"
               >
-                {btn}
+                {btn} <IconArrowRight size={16} />
               </button>
             </div>
           ))}

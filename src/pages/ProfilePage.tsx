@@ -9,9 +9,9 @@ import Spinner from '../components/Spinner'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-const inputClass = 'border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 w-full'
-const labelClass = 'text-sm font-medium text-gray-700'
-const errorClass = 'text-red-500 text-xs mt-0.5'
+const inputClass = 'field-input'
+const labelClass = 'field-label'
+const errorClass = 'field-error'
 
 function ProfilePage() {
   const [profile, setProfile] = useState<WorkoutFormData | null>(null)
@@ -90,30 +90,41 @@ function ProfilePage() {
   
  
 
-  return (
-    <div className="h-screen flex overflow-hidden">
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-24">
+        <Spinner size={36} />
+        <p className="text-sm text-neutral-500">Loading your profile…</p>
+      </div>
+    )
+  }
 
-      {/* -- Left form panel -- */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 py-10 px-6">
-        <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-sm p-8">
-          {isEdit && profile && (
+  if (profile) {
+    return (
+      <div className="px-4 md:px-8 py-8">
+        <div className="max-w-6xl mx-auto">
+          {isEdit && (
             <EditProfileModal
               profile={profile}
               onClose={() => setIsEdit(false)}
               onSave={(updated) => { setProfile(updated); setIsEdit(false) }}
             />
           )}
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-24">
-              <Spinner size={36} />
-              <p className="text-sm text-gray-500">Loading your profile�</p>
-            </div>
-          ) : profile ? (
-            <ProfileCard profile={profile} onEdit={editProfile} />
-          ) : (
-            <>
-              <h1 className="text-2xl font-bold text-gray-800 mb-1">Build Your Workout Plan</h1>
-              <p className="text-sm text-gray-500 mb-8">Fill in your details to generate a personalised plan.</p>
+          <ProfileCard profile={profile} onEdit={editProfile} />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] flex overflow-hidden">
+
+      {/* -- Left form panel -- */}
+      <div className="flex-1 overflow-y-auto bg-neutral-950 py-10 px-6">
+        <div className="max-w-lg mx-auto surface-card p-8">
+          <>
+              <h1 className="text-2xl font-bold text-white mb-1">Build Your Workout Plan</h1>
+              <p className="text-sm text-neutral-400 mb-8">Fill in your details to generate a personalised plan.</p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
 
@@ -123,7 +134,7 @@ function ProfilePage() {
               <input
                 {...register('goal')}
                 type="text"
-                placeholder="e.g. Lose weight, build muscle�"
+                placeholder="e.g. Lose weight, build muscle…"
                 className={inputClass}
               />
               {errors.goal && <span className={errorClass}>{errors.goal.message}</span>}
@@ -184,9 +195,9 @@ function ProfilePage() {
                       {...register('location')}
                       type="radio"
                       value={opt}
-                      className="accent-green-600"
+                      className="accent-emerald-400"
                     />
-                    <span className="text-sm text-gray-700 capitalize">
+                    <span className="text-sm text-neutral-300 capitalize">
                       {opt === 'homeWorkOut' ? 'Home' : opt === 'both' ? 'Both' : 'Gym'}
                     </span>
                   </label>
@@ -205,9 +216,9 @@ function ProfilePage() {
                       {...register('difficultLevel')}
                       type="radio"
                       value={level}
-                      className="accent-green-600"
+                      className="accent-emerald-400"
                     />
-                    <span className="text-sm text-gray-700 capitalize">{level}</span>
+                    <span className="text-sm text-neutral-300 capitalize">{level}</span>
                   </label>
                 ))}
               </div>
@@ -225,8 +236,8 @@ function ProfilePage() {
                     onClick={() => toggleDay(day)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                       selectedDays.includes(day)
-                        ? 'bg-green-600 text-white border-green-600'
-                        : 'bg-white text-gray-600 border-gray-300 hover:border-green-500'
+                        ? 'bg-emerald-400 text-neutral-950 border-emerald-400'
+                        : 'bg-white/3 text-neutral-400 border-white/10 hover:border-emerald-400/50'
                     }`}
                   >
                     {day.slice(0, 3)}
@@ -241,24 +252,23 @@ function ProfilePage() {
               <textarea
                 {...register('healthIssues')}
                 rows={3}
-                placeholder="e.g. bad knees, lower back pain�"
+                placeholder="e.g. bad knees, lower back pain…"
                 className={`${inputClass} resize-none`}
               />
             </div>
 
-            {error &&   profile &&
-              <p className="text-red-500 text-sm text-center">{error}</p>
+            {error &&
+              <p className="text-red-400 text-sm text-center">{error}</p>
             }
 
             <button
               type="submit"
-              className="bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors mt-2"
+              className="btn-accent py-3 mt-2"
             >
             Create profile
             </button>
               </form>
             </>
-          )}
         </div>
       </div>
 
@@ -330,7 +340,7 @@ function ProfilePage() {
           </h2>
 
           <p className="text-green-100/75 text-sm leading-relaxed mb-10 max-w-[300px]">
-            Personalised AI workout plans built around your body, your goals, and your lifestyle � no guesswork.
+            Personalised AI workout plans built around your body, your goals, and your lifestyle — no guesswork.
           </p>
 
           <div className="space-y-4">

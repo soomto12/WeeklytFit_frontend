@@ -3,11 +3,12 @@ import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { workoutFormSchema, type WorkoutFormData } from '../libs/types'
 import { API_BASE_URL } from '../libs/config'
+import { IconX } from './icons'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-const inputClass = 'border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 w-full'
-const labelClass = 'text-sm font-medium text-gray-700'
-const errorClass = 'text-red-500 text-xs mt-0.5'
+const inputClass = 'field-input'
+const labelClass = 'field-label'
+const errorClass = 'field-error'
 
 type Props = {
   profile: WorkoutFormData
@@ -57,29 +58,29 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <div className="bg-neutral-950 border border-white/10 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 relative">
 
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Edit Profile</h2>
+          <h2 className="text-xl font-bold text-white">Edit Profile</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+            className="text-neutral-500 hover:text-white transition-colors"
           >
-            ✕
+            <IconX size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
           <div className="flex flex-col gap-1">
-            <label className={labelClass}>Goal <span className="text-red-500">*</span></label>
+            <label className={labelClass}>Goal <span className="text-red-400">*</span></label>
             <input {...register('goal')} type="text" placeholder="e.g. Lose weight, build muscle…" className={inputClass} />
             {errors.goal && <span className={errorClass}>{errors.goal.message}</span>}
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className={labelClass}>Age <span className="text-red-500">*</span></label>
+            <label className={labelClass}>Age <span className="text-red-400">*</span></label>
             <input {...register('age')} type="number" placeholder="e.g. 25" className={inputClass} />
             {errors.age && <span className={errorClass}>{errors.age.message}</span>}
           </div>
@@ -101,12 +102,12 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className={labelClass}>Workout Location <span className="text-red-500">*</span></label>
+            <label className={labelClass}>Workout Location <span className="text-red-400">*</span></label>
             <div className="flex gap-3">
               {(['gym', 'homeWorkOut', 'both'] as const).map((opt) => (
                 <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                  <input {...register('location')} type="radio" value={opt} className="accent-green-600" />
-                  <span className="text-sm text-gray-700">
+                  <input {...register('location')} type="radio" value={opt} className="accent-emerald-400" />
+                  <span className="text-sm text-neutral-300">
                     {opt === 'homeWorkOut' ? 'Home' : opt === 'both' ? 'Both' : 'Gym'}
                   </span>
                 </label>
@@ -116,12 +117,12 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className={labelClass}>Difficulty Level <span className="text-red-500">*</span></label>
+            <label className={labelClass}>Difficulty Level <span className="text-red-400">*</span></label>
             <div className="flex gap-3">
               {(['beginner', 'intermidiate', 'expert'] as const).map((level) => (
                 <label key={level} className="flex items-center gap-2 cursor-pointer">
-                  <input {...register('difficultLevel')} type="radio" value={level} className="accent-green-600" />
-                  <span className="text-sm text-gray-700 capitalize">{level}</span>
+                  <input {...register('difficultLevel')} type="radio" value={level} className="accent-emerald-400" />
+                  <span className="text-sm text-neutral-300 capitalize">{level}</span>
                 </label>
               ))}
             </div>
@@ -138,8 +139,8 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
                   onClick={() => toggleDay(day)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                     selectedDays.includes(day)
-                      ? 'bg-green-600 text-white border-green-600'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-green-500'
+                      ? 'bg-emerald-400 text-neutral-950 border-emerald-400'
+                      : 'bg-white/3 text-neutral-400 border-white/10 hover:border-emerald-400/50'
                   }`}
                 >
                   {day.slice(0, 3)}
@@ -158,19 +159,19 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
             />
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
           <div className="flex gap-3 mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 btn-outline py-3"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors"
+              className="flex-1 btn-accent py-3"
             >
               Save Changes
             </button>
