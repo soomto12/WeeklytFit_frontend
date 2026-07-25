@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { workoutFormSchema, type WorkoutFormData } from '../libs/types'
+import { workoutFormSchema, GOAL_PRESETS, type WorkoutFormData } from '../libs/types'
 import { API_BASE_URL } from '../libs/config'
 import { useState, useEffect } from 'react'
 import ProfileCard from '../components/ProfileCard'
@@ -47,6 +47,7 @@ function ProfilePage() {
   })
 
   const selectedDays = watch('restDays') ?? []
+  const currentGoal = watch('goal') ?? ''
 
   const toggleDay = (day: string) => {
     if (selectedDays.includes(day)) {
@@ -129,12 +130,28 @@ function ProfilePage() {
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
 
             {/* Goal */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
               <label className={labelClass}>Goal <span className="text-red-500">*</span></label>
+              <div className="flex flex-wrap gap-2">
+                {GOAL_PRESETS.map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setValue('goal', preset, { shouldValidate: true })}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                      currentGoal === preset
+                        ? 'bg-emerald-400 text-neutral-950 border-emerald-400'
+                        : 'bg-white/3 text-neutral-400 border-white/10 hover:border-emerald-400/50'
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
               <input
                 {...register('goal')}
                 type="text"
-                placeholder="e.g. Lose weight, build muscle…"
+                placeholder="Or type your own goal…"
                 className={inputClass}
               />
               {errors.goal && <span className={errorClass}>{errors.goal.message}</span>}

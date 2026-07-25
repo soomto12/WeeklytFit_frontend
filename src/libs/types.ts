@@ -13,6 +13,15 @@ export const loginSchema = z.object({
 export type SignUpData = z.infer<typeof signUpSchema>
 export type LoginData = z.infer<typeof loginSchema>
 
+export const GOAL_PRESETS = [
+  'Lose weight',
+  'Build muscle',
+  'Improve endurance',
+  'Get stronger',
+  'Stay fit & healthy',
+  'Improve flexibility',
+] as const
+
 export const workoutFormSchema = z.object({
   goal: z.string().min(3, 'Goal must be at least 3 characters'),
   dailyHours: z.string().optional(),
