@@ -24,13 +24,13 @@ function EditProfileModal({ profile, onClose, onSave }: Props) {
     defaultValues: profile,
   })
 
-  const selectedDays = watch('restdays') ?? []
+  const selectedDays = watch('restDays') ?? []
 
   const toggleDay = (day: string) => {
     if (selectedDays.includes(day)) {
-      setValue('restdays', selectedDays.filter(d => d !== day))
+      setValue('restDays', selectedDays.filter(d => d !== day))
     } else {
-      setValue('restdays', [...selectedDays, day])
+      setValue('restDays', [...selectedDays, day])
     }
   }
 

@@ -18,7 +18,7 @@ export const workoutFormSchema = z.object({
   dailyHours: z.string().optional(),
   healthIssues: z.string().optional(),
   location: z.enum(['gym', 'homeWorkOut', 'both']),
-  restdays: z.array(z.string()).optional(),
+  restDays: z.array(z.string()).optional(),
   difficultLevel: z.enum(['beginner', 'intermidiate', 'expert']),
   age: z.string().min(1, 'Age is required'),
   weight: z.string().optional(),
