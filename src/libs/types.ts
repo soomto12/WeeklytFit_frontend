@@ -14,7 +14,7 @@ export type SignUpData = z.infer<typeof signUpSchema>
 export type LoginData = z.infer<typeof loginSchema>
 
 export const workoutFormSchema = z.object({
-  goal: z.string().min(1, 'Goal is required'),
+  goal: z.string().min(3, 'Goal must be at least 3 characters'),
   dailyHours: z.string().optional(),
   healthIssues: z.string().optional(),
   location: z.enum(['gym', 'homeWorkOut', 'both']),
