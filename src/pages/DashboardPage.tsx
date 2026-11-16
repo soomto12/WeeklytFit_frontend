@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { API_BASE_URL } from '../libs/config'
-import type { WorkoutRoutine, DailyLogStatus, DayPlan } from '../libs/types'
+import { toAiResult, type ApiAiResult, type WorkoutRoutine, type DailyLogStatus, type DayPlan } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
 import { IconDumbbell, IconFork, IconArrowRight, IconX, IconYoutube } from '../components/icons'
 
@@ -31,21 +31,23 @@ function TodaysFocusCard({ plan, doneCount, total }: { plan: DayPlan | undefined
     )
   }
 
-  const isRest = plan.workoutType?.toLowerCase() === 'rest'
+  const isRest = plan.isRest
 
   return (
     <div className="surface-card p-6 flex flex-col gap-5 lg:col-span-2">
       <div className="flex items-start justify-between">
         <div>
           <span className="pill pill-accent mb-3">TODAY'S FOCUS</span>
-          <h2 className="text-2xl font-bold text-white capitalize">{plan.focus || plan.day}</h2>
+          <h2 className="text-2xl font-bold text-white capitalize">{plan.day}</h2>
         </div>
-        {plan.duration ? (
+        {!isRest && (
           <div className="text-right shrink-0">
-            <p className="text-3xl font-extrabold text-emerald-400">{plan.duration}</p>
-            <p className="text-xs text-neutral-500">minutes</p>
+            <p className="text-3xl font-extrabold text-emerald-400">
+              {plan.exercises.reduce((n, ex) => n + (ex.sets || 0), 0)}
+            </p>
+            <p className="text-xs text-neutral-500">total sets</p>
           </div>
-        ) : null}
+        )}
       </div>
 
       <div>
@@ -59,7 +61,7 @@ function TodaysFocusCard({ plan, doneCount, total }: { plan: DayPlan | undefined
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <span className={`pill ${isRest ? 'pill-muted' : 'pill-accent'} capitalize`}>{plan.workoutType || 'Workout'}</span>
+        <span className={`pill ${isRest ? 'pill-muted' : 'pill-accent'} capitalize`}>{isRest ? 'Rest day' : 'Training'}</span>
         {plan.exercises?.length > 0 && (
           <span className="pill pill-muted">{plan.exercises.length} exercises</span>
         )}
@@ -117,8 +119,8 @@ function ExercisesCard({ plan }: { plan: DayPlan | undefined }) {
         <p className="text-neutral-500 text-sm py-6 text-center">No exercises for today.</p>
       ) : (
         <div className="flex flex-col">
-          {exercises.map((ex, i) => (
-            <div key={i} className="flex items-center gap-3 py-3 border-b border-white/5 last:border-0">
+          {exercises.map((ex) => (
+            <div key={ex.id} className="flex items-center gap-3 py-3 border-b border-white/5 last:border-0">
               <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 shrink-0">
                 <IconDumbbell size={16} />
               </div>
@@ -176,12 +178,12 @@ function MealsCard({ plan }: { plan: DayPlan | undefined }) {
 }
 
 function DayBadge({ day, plan }: { day: string; plan: DayPlan }) {
-  const isRest = plan?.workoutType?.toLowerCase() === 'rest'
+  const isRest = plan?.isRest ?? true
   return (
     <div className={`rounded-xl px-3 py-2 flex flex-col gap-0.5 border ${isRest ? 'bg-white/2 border-white/5' : 'bg-emerald-400/5 border-emerald-400/10'}`}>
       <span className="text-xs font-semibold text-neutral-500 capitalize">{day.slice(0, 3)}</span>
       <span className={`text-xs font-medium truncate ${isRest ? 'text-neutral-600' : 'text-emerald-400'}`}>
-        {plan?.focus || '—'}
+        {isRest ? 'Rest' : `${plan.exercises.length} ex`}
       </span>
     </div>
   )
@@ -209,7 +211,7 @@ function RoutineCard({ routine, onSelect }: { routine: WorkoutRoutine; onSelect:
 
       <div className="grid grid-cols-7 gap-1">
         {DAYS.map(day => (
-          <DayBadge key={day} day={day} plan={routine.dailyPlans[day]} />
+          <DayBadge key={day} day={day} plan={routine.weeklyPlans[day]} />
         ))}
       </div>
     </div>
@@ -218,7 +220,7 @@ function RoutineCard({ routine, onSelect }: { routine: WorkoutRoutine; onSelect:
 
 function RoutineModal({ routine, onClose }: { routine: WorkoutRoutine; onClose: () => void }) {
   const [selectedDay, setSelectedDay] = useState<Day>('monday')
-  const plan = routine.dailyPlans[selectedDay]
+  const plan = routine.weeklyPlans[selectedDay]
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
@@ -250,9 +252,8 @@ function RoutineModal({ routine, onClose }: { routine: WorkoutRoutine; onClose: 
         <div className="overflow-y-auto px-5 py-4 flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-2">
             {[
-              { label: 'Focus', value: plan?.focus },
-              { label: 'Type', value: plan?.workoutType },
-              { label: 'Duration', value: plan?.duration ? `${plan.duration} min` : '—' },
+              { label: 'Type', value: plan?.isRest ? 'Rest day' : 'Training' },
+              { label: 'Exercises', value: String(plan?.exercises.length ?? 0) },
             ].map(({ label, value }) => (
               <div key={label} className="bg-white/3 border border-white/10 rounded-xl px-3 py-2">
                 <p className="text-xs text-neutral-500">{label}</p>
@@ -261,20 +262,12 @@ function RoutineModal({ routine, onClose }: { routine: WorkoutRoutine; onClose: 
             ))}
           </div>
 
-          {plan?.warmup?.length > 0 && (
-            <div className="bg-emerald-400/5 border border-emerald-400/10 rounded-xl px-4 py-3">
-              <p className="text-xs text-emerald-400 font-medium mb-1">Warm-up</p>
-              <ul className="text-sm text-neutral-300 list-disc list-inside space-y-0.5">
-                {plan.warmup.map((w, i) => <li key={i}>{w}</li>)}
-              </ul>
-            </div>
-          )}
 
           {plan?.exercises?.length > 0 && (
             <div className="bg-white/3 border border-white/10 rounded-xl px-4 py-3">
               <p className="text-xs font-medium text-neutral-500 mb-2">Exercises</p>
-              {plan.exercises.map((ex, i) => (
-                <div key={i} className="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
+              {plan.exercises.map((ex) => (
+                <div key={ex.id} className="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
                   <span className="text-xs text-neutral-200 font-medium flex items-center gap-1.5">
                     {ex.name}
                     {ex.youtubeUrl && (
@@ -333,7 +326,7 @@ function DashboardPage() {
         })
         if (!res.ok) return
         const data = await res.json()
-        setRoutines(data.data)
+        setRoutines((data.data as ApiAiResult[]).map(toAiResult))
       } catch (error) {
         console.error(error)
       } finally {

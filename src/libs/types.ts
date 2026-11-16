@@ -36,52 +36,77 @@ export const workoutFormSchema = z.object({
 
 export type WorkoutFormData = z.infer<typeof workoutFormSchema>
 
+// ---- Raw API shapes (POST/PUT /aiResult/generate, GET /aiResult/result(s)) ----
 
-export interface Exercise {
-    name: string
-    sets: number
-    reps: string | number
-    rest: number
-    youtubeUrl?: string
+export interface ApiExercise {
+  id: number
+  aiResultId: number
+  day: string
+  name: string
+  sets: number
+  reps: string
+  rest: number
+  youtubeUrl?: string
+  order: number
 }
 
+export type MealType = 'breakfast' | 'lunch' | 'dinner'
 
-export interface DayPlan {
-    day: string
-    focus: string
-    workoutType: string
-    duration: number
-    warmup: string[]
-    exercises: Exercise[]
-    meals: {
-        breakfast: string
-        lunch: string
-        dinner: string
-    }
-    motivation?: string
+export interface ApiFood {
+  id: number
+  aiResultId: number
+  day: string
+  mealType: MealType
+  name: string
 }
+
+export interface ApiAiResult {
+  id: number
+  userId?: number
+  createdAt: string
+  updatedAt?: string
+  exercises: ApiExercise[]
+  foods: ApiFood[]
+}
+
+// ---- UI shapes (grouped by day) ----
 
 export type DailyLogStatus = 'done' | 'unable' | 'missed' | 'pending'
 
 export const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
 export type Day = typeof DAYS[number]
 
-export interface WorkoutRoutine {
-    id: number
-    createdAt: string
-    dailyPlans: AI_Result['weeklyPlans']
+export type Exercise = ApiExercise
+
+export interface DayPlan {
+  day: Day
+  isRest: boolean
+  exercises: Exercise[]
+  meals: Record<MealType, string>
 }
 
+export type WeeklyPlans = Record<Day, DayPlan>
+
 export interface AI_Result {
-    id?: number
-    userId?: number | string
-    weeklyPlans: {
-        sunday: DayPlan
-        monday: DayPlan
-        tuesday: DayPlan
-        wednesday: DayPlan
-        thursday: DayPlan
-        friday: DayPlan
-        saturday: DayPlan
+  id: number
+  createdAt: string
+  weeklyPlans: WeeklyPlans
+}
+
+export type WorkoutRoutine = AI_Result
+
+/** Groups the flat exercises/foods arrays from the API into a per-day plan. */
+export function toAiResult(data: ApiAiResult): AI_Result {
+  const weeklyPlans = {} as WeeklyPlans
+  for (const day of DAYS) {
+    const exercises = (data.exercises ?? [])
+      .filter(e => e.day?.toLowerCase() === day)
+      .sort((a, b) => a.order - b.order)
+    const meals: Record<MealType, string> = { breakfast: '', lunch: '', dinner: '' }
+    for (const f of data.foods ?? []) {
+      if (f.day?.toLowerCase() === day && f.mealType in meals) meals[f.mealType] = f.name
     }
+    weeklyPlans[day] = { day, isRest: exercises.length === 0, exercises, meals }
+  }
+  return { id: data.id, createdAt: data.createdAt, weeklyPlans }
 }

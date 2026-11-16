@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { DailyLogStatus, Day } from '../libs/types'
+import { toAiResult, type DailyLogStatus, type Day } from '../libs/types'
 import { usePlan } from '../context/PlanContext'
 import { API_BASE_URL } from '../libs/config'
 import { DayTabs } from '../components/generate/DayTabs'
@@ -72,7 +72,7 @@ function GeneratePage() {
         return
       }
 
-      setAiResult({ id: data.data.id, weeklyPlans: data.data.dailyPlans })
+      setAiResult(toAiResult(data.data))
     } catch (error) {
       console.error(error)
     } finally {

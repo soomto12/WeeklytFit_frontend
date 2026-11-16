@@ -9,8 +9,11 @@ export function ExercisesCard({ plan }: { plan: DayPlan }) {
         <span className="text-xs text-neutral-500 uppercase tracking-wide">{plan.exercises.length} total movements</span>
       </div>
       <div className="flex flex-col">
-        {plan.exercises.map((ex, i) => (
-          <div key={i} className="flex items-center justify-between gap-4 py-3.5 border-b border-white/5 last:border-0">
+        {plan.isRest && (
+          <p className="text-neutral-500 text-sm py-6 text-center">Rest day — no exercises scheduled. Recover well!</p>
+        )}
+        {plan.exercises.map((ex) => (
+          <div key={ex.id} className="flex items-center justify-between gap-4 py-3.5 border-b border-white/5 last:border-0">
             <div className="flex items-center gap-2">
               <p className="text-sm font-bold text-white uppercase tracking-wide">{ex.name}</p>
               {ex.youtubeUrl && (

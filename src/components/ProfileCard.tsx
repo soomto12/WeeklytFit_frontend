@@ -148,9 +148,9 @@ function ProfileCard({ profile, onEdit }: { profile: WorkoutFormData; onEdit: ()
           {WEEK.map((day) => {
             const dayPlan = aiResult?.weeklyPlans?.[day]
             const isRest = dayPlan
-              ? dayPlan.workoutType?.toLowerCase() === 'rest'
+              ? dayPlan.isRest
               : profile.restDays?.some(d => d.toLowerCase() === day)
-            const label = dayPlan ? (isRest ? 'Rest' : dayPlan.focus) : (isRest ? 'Rest' : 'Training')
+            const label = isRest ? 'Rest' : dayPlan ? `${dayPlan.exercises.length} exercises` : 'Training'
             const isToday = day === todayKey
 
             return (

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode, type Dispatch, type SetStateAction } from 'react'
-import type { AI_Result, DailyLogStatus, Day } from '../libs/types'
+import { toAiResult, type AI_Result, type DailyLogStatus, type Day } from '../libs/types'
 import { API_BASE_URL } from '../libs/config'
 
 const DEFAULT_LOGS: Record<Day, DailyLogStatus> = {
@@ -35,7 +35,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
 
         if (planRes.ok) {
           const planData = await planRes.json()
-          setAiResult({ id: planData.data.id, weeklyPlans: planData.data.dailyPlans })
+          if (planData.data) setAiResult(toAiResult(planData.data))
         }
 
         if (logsRes.ok) {
